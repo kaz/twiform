@@ -24,6 +24,9 @@ func main() {
 		s.Plan()
 	case "apply":
 		s.Apply()
+		if err != nil {
+			panic(err)
+		}
 	default:
 		fmt.Println("no such subcommand: ", os.Args[1])
 	}
