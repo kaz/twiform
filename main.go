@@ -10,21 +10,26 @@ import (
 )
 
 func main() {
-	if os.Args[1] == "serve" {
-		serve()
-	}
-
 	s, err := sync.New(state.NewJsonStore("state.json"))
 	if err != nil {
 		panic(err)
 	}
 
 	switch os.Args[1] {
+	case "serve":
+		serve()
+	case "clean":
+		s.Clean()
 	case "plan":
+		if err := s.Sync(); err != nil {
+			panic(err)
+		}
 		s.Plan()
 	case "apply":
-		s.Apply()
-		if err != nil {
+		if err := s.Sync(); err != nil {
+			panic(err)
+		}
+		if err := s.Apply(); err != nil {
 			panic(err)
 		}
 	default:

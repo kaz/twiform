@@ -24,32 +24,41 @@ func New(store state.Store) (*Synchronizer, error) {
 		return nil, fmt.Errorf("store.Load failed: %w", err)
 	}
 
-	s := &Synchronizer{st, store, nil}
-	defer s.Save()
+	return &Synchronizer{st, store, nil}, nil
+}
 
+func (s *Synchronizer) Clean() error {
+	s.Followers = nil
+	s.Friends = nil
+	s.Effect = nil
+
+	if err := s.store.Save(s.State); err != nil {
+		return fmt.Errorf("s.store.Save failed: %w", err)
+	}
+	return nil
+}
+
+func (s *Synchronizer) Sync() error {
 	if err := s.authorize(); err != nil {
-		return nil, fmt.Errorf("s.authorize failed: %w", err)
+		return fmt.Errorf("s.authorize failed: %w", err)
 	}
 
 	s.client = anaconda.NewTwitterApiWithCredentials(s.Credentilas.AccessTokenKey, s.Credentilas.AccessTokenSecret, s.Credentilas.ConsumerKey, s.Credentilas.ConsumerSecret)
 
 	if err := s.syncFollowers(); err != nil {
-		return nil, fmt.Errorf("s.syncFollowers failed: %w", err)
+		return fmt.Errorf("s.syncFollowers failed: %w", err)
 	}
 
 	if err := s.syncFriends(); err != nil {
-		return nil, fmt.Errorf("s.syncFriends failed: %w", err)
+		return fmt.Errorf("s.syncFriends failed: %w", err)
 	}
 
 	s.calcEffects()
-
-	return s, nil
-}
-
-func (s *Synchronizer) Save() {
 	if err := s.store.Save(s.State); err != nil {
-		panic(fmt.Errorf("s.store.Save failed: %w", err))
+		return fmt.Errorf("s.store.Save failed: %w", err)
 	}
+
+	return nil
 }
 
 func (s *Synchronizer) authorize() error {
