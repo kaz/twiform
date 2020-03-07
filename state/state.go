@@ -11,14 +11,26 @@ type (
 	}
 
 	State struct {
-		Credentilas struct {
-			ConsumerKey       string `json:"consumer_key"`
-			ConsumerSecret    string `json:"consumer_secret"`
-			AccessTokenKey    string `json:"access_token_key"`
-			AccessTokenSecret string `json:"access_token_secret"`
-		} `json:"credentials"`
+		Credentilas *Credentilas `json:"credentials"`
 
-		Followers map[int64]anaconda.User `json:"followers"`
-		Friends   map[int64]anaconda.User `json:"friends"`
+		Ignore []string `json:"ignore"`
+
+		Followers map[string]anaconda.User `json:"followers"`
+		Friends   map[string]anaconda.User `json:"friends"`
+
+		Effect *Effect `json:"effect"`
+	}
+
+	Credentilas struct {
+		ConsumerKey       string `json:"consumer_key"`
+		ConsumerSecret    string `json:"consumer_secret"`
+		AccessTokenKey    string `json:"access_token_key"`
+		AccessTokenSecret string `json:"access_token_secret"`
+	}
+
+	Effect struct {
+		NotFollowers    []anaconda.User `json:"not_followers"`
+		NotFriends      []anaconda.User `json:"not_friends"`
+		PurgeCandidates []anaconda.User `json:"purge_candidates"`
 	}
 )

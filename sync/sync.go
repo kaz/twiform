@@ -41,6 +41,8 @@ func New(store state.Store) (*Synchronizer, error) {
 		return nil, fmt.Errorf("s.syncFriends failed: %w", err)
 	}
 
+	s.calcEffects()
+
 	return s, nil
 }
 
@@ -77,14 +79,14 @@ func (s *Synchronizer) syncFollowers() error {
 		return fmt.Errorf("url.ParseQuery failed: %w", err)
 	}
 
-	s.Followers = map[int64]anaconda.User{}
+	s.Followers = map[string]anaconda.User{}
 	for page := range s.client.GetFollowersListAll(param) {
 		if page.Error != nil {
 			return fmt.Errorf("s.client.GetFollowersListAll failed: %w", page.Error)
 		}
 
 		for _, user := range page.Followers {
-			s.Followers[user.Id] = user
+			s.Followers[user.ScreenName] = user
 		}
 	}
 
@@ -101,14 +103,14 @@ func (s *Synchronizer) syncFriends() error {
 		return fmt.Errorf("url.ParseQuery failed: %w", err)
 	}
 
-	s.Friends = map[int64]anaconda.User{}
+	s.Friends = map[string]anaconda.User{}
 	for page := range s.client.GetFriendsListAll(param) {
 		if page.Error != nil {
 			return fmt.Errorf("s.client.GetFriendsListAll failed: %w", page.Error)
 		}
 
 		for _, user := range page.Friends {
-			s.Friends[user.Id] = user
+			s.Friends[user.ScreenName] = user
 		}
 	}
 
