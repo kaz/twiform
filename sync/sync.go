@@ -28,6 +28,9 @@ func New(store state.Store) (*Synchronizer, error) {
 }
 
 func (s *Synchronizer) Clean() error {
+	s.Credentilas.AccessTokenKey = ""
+	s.Credentilas.AccessTokenSecret = ""
+
 	s.Followers = nil
 	s.Friends = nil
 	s.Effect = nil

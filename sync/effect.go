@@ -8,12 +8,12 @@ import (
 
 func (s *Synchronizer) calcEffects() {
 	followers := mapset.NewSet()
-	for key, _ := range s.Followers {
+	for key := range s.Followers {
 		followers.Add(key)
 	}
 
 	friends := mapset.NewSet()
-	for key, _ := range s.Friends {
+	for key := range s.Friends {
 		friends.Add(key)
 	}
 
