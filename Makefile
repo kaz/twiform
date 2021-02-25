@@ -1,5 +1,9 @@
-twiform:
-	go build
+.PHONY: noop
+noop:
+
+.PHONY: clean plan apply
+clean plan apply: state.json
+	go run . $@
 
 state.json:
 	gpg --output $@ --decrypt $@.gpg
@@ -7,7 +11,3 @@ state.json:
 .PHONY: encrypt
 encrypt:
 	gpg --default-recipient-self --encrypt state.json
-
-.PHONY: clean serve plan apply
-clean serve plan apply: twiform state.json
-	./$< $@

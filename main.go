@@ -16,15 +16,13 @@ func main() {
 	}
 
 	switch os.Args[1] {
-	case "serve":
-		serve()
 	case "clean":
 		s.Clean()
 	case "plan":
 		if err := s.Sync(); err != nil {
 			panic(err)
 		}
-		s.Plan()
+		servePlanner()
 	case "apply":
 		if err := s.Sync(); err != nil {
 			panic(err)
@@ -37,7 +35,7 @@ func main() {
 	}
 }
 
-func serve() {
+func servePlanner() {
 	fmt.Println("serving at http://localhost:8080")
 	panic(http.ListenAndServe(":8080", http.FileServer(http.Dir("."))))
 }
