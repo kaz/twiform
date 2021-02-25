@@ -1,6 +1,6 @@
 module github.com/kaz/twiform
 
-go 1.15
+go 1.16
 
 require (
 	github.com/ChimeraCoder/anaconda v2.0.0+incompatible
@@ -11,5 +11,5 @@ require (
 	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
 	github.com/garyburd/go-oauth v0.0.0-20180319155456-bca2e7f09a17 // indirect
 	github.com/mrjones/oauth v0.0.0-20190623134757-126b35219450
-	golang.org/x/net v0.0.0-20200923182212-328152dc79b1 // indirect
+	golang.org/x/net v0.0.0-20210224082022-3d97a244fca7 // indirect
 )
