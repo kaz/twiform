@@ -1,6 +1,8 @@
 package sync
 
 import (
+	"fmt"
+
 	"github.com/ChimeraCoder/anaconda"
 	mapset "github.com/deckarep/golang-set"
 	"github.com/kaz/twiform/state"
@@ -17,26 +19,25 @@ func (s *Synchronizer) calcEffects() {
 		friends.Add(key)
 	}
 
-	purged := followers.Union(friends).Difference(followers.Intersect(friends))
-	for _, ig := range s.Ignore {
-		purged.Remove(ig)
-	}
-
 	s.Effect = &state.Effect{
-		NotFollowers:    s.setToUserList(friends.Difference(followers)),
-		NotFriends:      s.setToUserList(followers.Difference(friends)),
-		PurgeCandidates: s.setToUserList(purged),
+		NotFollowers:    s.setToSlice(friends.Difference(followers)),
+		NotFriends:      s.setToSlice(followers.Difference(friends)),
+		PurgeCandidates: s.setToSlice(followers.Union(friends).Difference(followers.Intersect(friends))),
 	}
 }
 
-func (s *Synchronizer) setToUserList(set mapset.Set) []anaconda.User {
+func (s *Synchronizer) setToSlice(set mapset.Set) []anaconda.User {
 	users := make([]anaconda.User, 0, set.Cardinality())
 	for key := range set.Iter() {
 		if ent, ok := s.Followers[key.(string)]; ok {
 			users = append(users, ent)
 			continue
 		}
-		users = append(users, s.Friends[key.(string)])
+		if ent, ok := s.Friends[key.(string)]; ok {
+			users = append(users, ent)
+			continue
+		}
+		panic(fmt.Errorf("not found: %s", key))
 	}
 	return users
 }
