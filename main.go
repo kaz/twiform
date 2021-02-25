@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
+	"github.com/kaz/twiform/plan"
 	"github.com/kaz/twiform/state"
 	"github.com/kaz/twiform/sync"
 )
@@ -22,7 +22,7 @@ func main() {
 		if err := s.Sync(); err != nil {
 			panic(err)
 		}
-		servePlanner()
+		plan.StartServer()
 	case "apply":
 		if err := s.Sync(); err != nil {
 			panic(err)
@@ -33,9 +33,4 @@ func main() {
 	default:
 		fmt.Println("no such subcommand: ", os.Args[1])
 	}
-}
-
-func servePlanner() {
-	fmt.Println("serving at http://localhost:8080")
-	panic(http.ListenAndServe(":8080", http.FileServer(http.Dir("."))))
 }

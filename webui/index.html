@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>twiform</title>
+		<link rel="stylesheet" href="index.css" />
+		<base target="_blank" />
+	</head>
+	<body>
+		<main>
+			<label v-for="select in ['not_followers', 'not_friends', 'purge_candidates', 'plan']">
+				<input type="radio" v-model="tab" name="tab" :value="select" />
+				{{select}}
+			</label>
+
+			<section v-if="tab == 'not_followers'">
+				<h1>Me → You : only</h1>
+				<div v-if="state" v-for="user in notFollowers">
+					<h2>
+						<label>
+							<img :src="`https://res.cloudinary.com/narusejun/image/twitter_name/h_32/${user.screen_name}.jpg`" />
+							{{user.name}}
+						</label>
+						(<a :href="`https://twitter.com/${user.screen_name}`">@{{user.screen_name}}</a>)
+					</h2>
+					<pre>{{user.description}}</pre>
+				</div>
+			</section>
+
+			<section v-if="tab == 'not_friends'">
+				<h1>You → Me : only</h1>
+				<div v-if="state" v-for="user in notFriends">
+					<h2>
+						<label>
+							<img :src="`https://res.cloudinary.com/narusejun/image/twitter_name/h_32/${user.screen_name}.jpg`" />
+							{{user.name}}
+						</label>
+						(<a :href="`https://twitter.com/${user.screen_name}`">@{{user.screen_name}}</a>)
+					</h2>
+					<pre>{{user.description}}</pre>
+				</div>
+			</section>
+
+			<section v-if="tab == 'purge_candidates'">
+				<h1>Purge Candidates</h1>
+				<textarea>{{ignores}}</textarea>
+				<div v-if="state" v-for="user in purges">
+					<h2>
+						<label>
+							<input type="checkbox" :value="user.screen_name" v-model="state.ignore" />
+							<img :src="`https://res.cloudinary.com/narusejun/image/twitter_name/h_32/${user.screen_name}.jpg`" />
+							{{user.name}}
+						</label>
+						(<a :href="`https://twitter.com/${user.screen_name}`">@{{user.screen_name}}</a>)
+					</h2>
+					<pre>{{user.description}}</pre>
+				</div>
+			</section>
+
+			<section v-if="tab == 'plan'">
+				<h1>Plan</h1>
+				<div v-if="state" v-for="user in plans">
+					<h2>
+						<label>
+							<img :src="`https://res.cloudinary.com/narusejun/image/twitter_name/h_32/${user.screen_name}.jpg`" />
+							{{user.name}}
+						</label>
+						(<a :href="`https://twitter.com/${user.screen_name}`">@{{user.screen_name}}</a>)
+					</h2>
+					<pre>{{user.description}}</pre>
+				</div>
+			</section>
+		</main>
+		<script src="https://unpkg.com/vue@3"></script>
+		<script src="index.js"></script>
+	</body>
+</html>
