@@ -3,10 +3,28 @@ package sync
 import (
 	"fmt"
 	"log"
+	"strings"
 )
 
 func (s *Synchronizer) Apply() error {
-	for _, user := range s.Effect.PurgeCandidates {
+	purges := s.getPurges()
+
+	for _, user := range purges {
+		fmt.Printf("* @%s\n", user.ScreenName)
+	}
+	fmt.Printf("\n[!] %d accounts above will be purged. Are you sure? [Y/n]: ", len(purges))
+
+	input := ""
+	if _, err := fmt.Scanln(&input); err != nil {
+		return fmt.Errorf("fmt.Scanln: %w", err)
+	}
+
+	if strings.ToLower(input)[0] != 'y' {
+		fmt.Println("Cancelled")
+		return nil
+	}
+
+	for _, user := range purges {
 		if _, err := s.client.BlockUserId(user.Id, nil); err != nil {
 			return fmt.Errorf("s.client.BlockUserId failed: %w", err)
 		}

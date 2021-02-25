@@ -26,6 +26,17 @@ func (s *Synchronizer) calcEffects() {
 	}
 }
 
+func (s *Synchronizer) getPurges() []anaconda.User {
+	purges := mapset.NewSet()
+	for _, user := range s.Effect.PurgeCandidates {
+		purges.Add(user.ScreenName)
+	}
+	for _, ignoredScreenName := range s.Ignore {
+		purges.Remove(ignoredScreenName)
+	}
+	return s.setToSlice(purges)
+}
+
 func (s *Synchronizer) setToSlice(set mapset.Set) []anaconda.User {
 	users := make([]anaconda.User, 0, set.Cardinality())
 	for key := range set.Iter() {
